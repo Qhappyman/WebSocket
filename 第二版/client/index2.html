@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+</head>
+<body>
+<div id="show"></div>
+<div >
+    <input id="message" type="text"   style="width: 200px">
+            <button type="button" id="send"
+                    onclick="sendMessage();">
+                Send!
+            </button>
+    <button type="button" id="send"
+            onclick="exit();">
+        exit
+    </button>
+</div>
+<script>
+const show = document.getElementById('show')
+const send = document.getElementById('send')
+const message = document.getElementById('message')
+    var ws = new WebSocket('ws://localhost:8000');
+    ws.onopen = function (e) {
+        console.log('Connection to server opened'+ws.readyState);
+        show.innerHTML = "连接状态："+ws.readyState+"</br>"
+    }
+    ws.onmessage=function (evt) {
+        show.append(evt.data + "</br>");
+    }
+    ws.onclose = function(evt) {
+        console.log("WebSocketClosed!");
+        console.log(evt);
+    };
+    function sendMessage() {
+        var msg=message.value
+        var s={msg:msg,name:"小王"};
+        ws.send(JSON.stringify(s));
+        chang();
+    }
+    function chang() {
+        message.innerHTML=""
+    }
+    function exit() {
+        ws.close();
+        console.log("退出啦");
+    }
+
+</script>
+</body>
+</html>
